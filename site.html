@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#080807">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="FEEDECK">
+<link rel="manifest" id="pwa-manifest">
+<title>FEEDECK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Azeret+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080807; --s1: #111110; --s2: #1c1c1a; --s3: #252523;
+  --border: #2e2e2b; --acc: #c8ff00; --acc2: #89b200; --acc3: #3a4d00;
+  --text: #d4d4cc; --muted: #5a5a54; --dim: #333330;
+  --yt: #ff4545; --rd: #ff6820; --rs: #6dbf3a; --gh: #9b8fff; --bl: #4da8ff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Azeret Mono', monospace; overscroll-behavior: none; }
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: 999; pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
+}
+.wrapper { max-width: 480px; margin: 0 auto; padding: 0 0 80px; min-height: 100vh; }
+
+/* HEADER */
+header { padding: 20px 16px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-end; justify-content: space-between; }
+.logo { font-family: 'Share Tech Mono', monospace; font-size: 22px; letter-spacing: 0.12em; color: var(--acc); line-height: 1; }
+.logo span { color: var(--acc2); font-size: 14px; letter-spacing: 0.08em; display: block; margin-top: 3px; }
+.cursor { display: inline-block; width: 9px; height: 17px; background: var(--acc); margin-left: 3px; vertical-align: -3px; animation: blink 1.1s step-end infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.header-right { text-align: right; }
+#clock { font-family: 'Share Tech Mono', monospace; font-size: 18px; color: var(--text); letter-spacing: 0.05em; }
+#dateline { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; margin-top: 2px; }
+
+/* STATUS BAR */
+.statusbar { display: flex; gap: 6px; padding: 8px 16px; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+.statusbar::-webkit-scrollbar { display: none; }
+.stag { font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.1em; white-space: nowrap; padding: 3px 8px; border-radius: 2px; border: 1px solid var(--border); color: var(--muted); }
+.stag.on { border-color: var(--acc3); color: var(--acc2); background: rgba(200,255,0,0.05); }
+
+/* SECTION LABEL */
+.sec-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.18em; color: var(--muted); padding: 14px 16px 6px; }
+
+/* CATEGORY ROWS */
+.cat-item { border-bottom: 1px solid var(--border); }
+.cat-btn {
+  width: 100%; background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; text-align: left; transition: background 0.12s; position: relative;
+}
+.cat-btn:active { background: var(--s2); }
+.cat-btn.open { background: var(--s1); }
+.cat-btn.open::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--acc); }
+.cat-code {
+  font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.15em;
+  color: var(--acc2); background: var(--acc3); padding: 3px 7px; border-radius: 2px;
+  min-width: 42px; text-align: center; flex-shrink: 0;
+}
+.cat-btn.open .cat-code { background: var(--acc); color: var(--bg); }
+.cat-name { font-family: 'Share Tech Mono', monospace; font-size: 14px; letter-spacing: 0.08em; color: var(--text); flex: 1; }
+.cat-btn.open .cat-name { color: var(--acc); }
+.cat-meta { display: flex; align-items: center; gap: 8px; }
+
+/* PLUS BUTTON */
+.plus-btn {
+  font-family: 'Share Tech Mono', monospace; font-size: 18px; line-height: 1;
+  color: var(--muted); background: none; border: 1px solid var(--border);
+  border-radius: 2px; min-width: 44px; height: 44px; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.plus-btn:active, .plus-btn.active { color: var(--acc); border-color: var(--acc2); background: var(--acc3); }
+
+.arrow { font-size: 12px; color: var(--muted); transition: transform 0.2s; }
+.cat-btn.open .arrow { transform: rotate(90deg); color: var(--acc); }
+.link-count { font-size: 10px; color: var(--muted); font-family: 'Share Tech Mono', monospace; }
+
+/* ADD FORM — inline */
+.add-form {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.22s cubic-bezier(0.4,0,0.2,1);
+  background: var(--s2); border-bottom: 1px solid var(--border);
+}
+.add-form.open { max-height: 200px; }
+.add-form-inner { padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 10px; }
+.add-form-row { display: flex; gap: 8px; align-items: center; }
+.add-input {
+  flex: 1; background: var(--s1); border: 1px solid var(--border);
+  border-radius: 2px; color: var(--text); font-family: 'Azeret Mono', monospace;
+  font-size: 16px; padding: 11px 12px; outline: none; min-height: 44px;
+  transition: border-color 0.15s;
+}
+.add-input:focus { border-color: var(--acc2); }
+.add-input::placeholder { color: var(--muted); }
+.add-confirm {
+  font-family: 'Share Tech Mono', monospace; font-size: 12px; letter-spacing: 0.05em;
+  background: var(--acc3); color: var(--acc2); border: 1px solid var(--acc2);
+  border-radius: 2px; padding: 11px 14px; cursor: pointer; white-space: nowrap;
+  min-height: 44px; transition: background 0.15s, color 0.15s;
+}
+.add-confirm:active { background: var(--acc); color: var(--bg); }
+.add-cancel {
+  font-family: 'Share Tech Mono', monospace; font-size: 14px;
+  background: none; color: var(--muted); border: 1px solid var(--border);
+  border-radius: 2px; padding: 11px 12px; cursor: pointer; min-height: 44px;
+  transition: color 0.15s;
+}
+.add-cancel:active { color: var(--text); }
+.add-hint { font-size: 10px; color: var(--muted); letter-spacing: 0.05em; }
+
+/* EXPANDED PANEL */
+.cat-panel { max-height: 0; overflow: hidden; transition: max-height 0.28s cubic-bezier(0.4,0,0.2,1); background: var(--s1); }
+.cat-panel.open { max-height: 1200px; }
+.link-list { padding: 4px 0 10px; }
+.link-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 12px 13px 20px; color: var(--text);
+  transition: background 0.1s; position: relative; min-height: 48px;
+}
+.link-anchor {
+  display: flex; align-items: center; gap: 10px; flex: 1;
+  text-decoration: none; color: var(--text); min-width: 0;
+}
+.link-anchor:active { opacity: 0.7; }
+.link-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--dim); flex-shrink: 0; }
+.link-dot.custom { background: var(--acc2); }
+.link-name { font-size: 13px; flex: 1; color: var(--text); letter-spacing: 0.01em; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ptag { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.12em; padding: 3px 6px; border-radius: 2px; flex-shrink: 0; }
+.ptag.yt  { color: var(--yt); border: 1px solid rgba(255,69,69,0.3); background: rgba(255,69,69,0.08); }
+.ptag.rd  { color: var(--rd); border: 1px solid rgba(255,104,32,0.3); background: rgba(255,104,32,0.08); }
+.ptag.rs  { color: var(--rs); border: 1px solid rgba(109,191,58,0.3); background: rgba(109,191,58,0.08); }
+.ptag.gh  { color: var(--gh); border: 1px solid rgba(155,143,255,0.3); background: rgba(155,143,255,0.08); }
+.ptag.bl  { color: var(--bl); border: 1px solid rgba(77,168,255,0.3); background: rgba(77,168,255,0.08); }
+.link-actions { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+.link-btn {
+  font-size: 13px; color: var(--dim); background: none; border: none;
+  cursor: pointer; padding: 10px 7px; line-height: 1;
+  transition: color 0.15s; min-width: 44px; text-align: center;
+}
+.link-btn:active { color: var(--acc2); }
+.link-del:active { color: var(--yt) !important; }
+
+/* RENAME ROW — inline below a link */
+.rename-row {
+  display: flex; gap: 8px; align-items: center;
+  padding: 0 12px 10px 20px; background: var(--s1);
+}
+.rename-row .add-input { font-size: 16px; min-height: 44px; padding: 8px 10px; }
+.rename-confirm {
+  font-family: 'Share Tech Mono', monospace; font-size: 11px;
+  background: var(--acc3); color: var(--acc2); border: 1px solid var(--acc2);
+  border-radius: 2px; padding: 8px 12px; cursor: pointer; white-space: nowrap;
+  min-height: 44px; transition: background 0.15s, color 0.15s;
+}
+.rename-confirm:active { background: var(--acc); color: var(--bg); }
+.rename-cancel {
+  font-family: 'Share Tech Mono', monospace; font-size: 13px;
+  background: none; color: var(--muted); border: 1px solid var(--border);
+  border-radius: 2px; padding: 8px 10px; cursor: pointer; min-height: 44px;
+}
+.rename-cancel:active { color: var(--text); }
+
+/* INO GRID */
+.ino-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; padding: 8px 16px 4px; }
+.ino-card {
+  background: var(--s1); border: 1px solid var(--border); border-radius: 4px;
+  padding: 12px; text-decoration: none; color: var(--text);
+  display: flex; flex-direction: column; gap: 5px; transition: border-color 0.15s, background 0.15s;
+}
+.ino-card:active { background: var(--s2); border-color: var(--acc3); }
+.ino-code { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.15em; color: var(--acc2); display: flex; align-items: center; justify-content: space-between; }
+.ino-del { font-size: 13px; color: var(--dim); background: none; border: none; cursor: pointer; line-height: 1; transition: color 0.15s; }
+.ino-del:active { color: var(--yt); }
+.ino-name { font-size: 12px; color: var(--text); }
+.ino-sub { font-size: 10px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* INO ADD CARD */
+.ino-add-card {
+  background: var(--s1); border: 1px dashed var(--border); border-radius: 4px;
+  padding: 12px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; gap: 6px; transition: border-color 0.15s, background 0.15s; min-height: 72px;
+}
+.ino-add-card:active { background: var(--s2); border-color: var(--acc2); }
+.ino-add-label { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.1em; }
+
+/* INO ADD FORM */
+.ino-add-form { padding: 10px 16px 4px; display: none; flex-direction: column; gap: 8px; }
+.ino-add-form.open { display: flex; }
+.ino-add-row { display: flex; gap: 8px; }
+.ino-add-row .add-input { flex: 1; }
+.ino-name-row { display: flex; gap: 8px; }
+.ino-name-row .add-input { flex: 1; }
+
+/* FOOTER */
+footer {
+  position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg);
+  border-top: 1px solid var(--border); padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-left { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.1em; }
+.footer-right { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--acc2); letter-spacing: 0.1em; }
+.pulse { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--acc); margin-right: 5px; vertical-align: 0px; animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+@keyframes fadeUp { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+.cat-item { animation: fadeUp 0.3s ease both; }
+.cat-item:nth-child(1){animation-delay:0.05s} .cat-item:nth-child(2){animation-delay:0.10s}
+.cat-item:nth-child(3){animation-delay:0.15s} .cat-item:nth-child(4){animation-delay:0.20s}
+.cat-item:nth-child(5){animation-delay:0.25s} .cat-item:nth-child(6){animation-delay:0.30s}
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<header>
+  <div class="logo">FEEDECK<span class="cursor"></span><span>PERSONAL FEED TERMINAL</span></div>
+  <div class="header-right">
+    <div id="clock">00:00</div>
+    <div id="dateline"></div>
+  </div>
+</header>
+
+<div class="statusbar">
+  <div class="stag on">HARDWARE</div><div class="stag on">RETRO</div>
+  <div class="stag on">BUILDS</div><div class="stag on">STYLE</div>
+  <div class="stag on">ANIME</div><div class="stag on">GITHUB</div>
+  <div class="stag">NO ADS</div><div class="stag">NO ALG</div>
+</div>
+
+<div class="sec-label">// FEED CATEGORIES</div>
+<div id="categories"></div>
+
+<div class="sec-label">// QUICK ACCESS — INOREADER FOLDERS</div>
+<div class="ino-grid" id="ino-grid"></div>
+<div class="ino-add-form" id="ino-add-form">
+  <div class="add-hint">PASTE URL + LABEL FOR NEW QUICK ACCESS</div>
+  <div class="ino-add-row">
+    <input class="add-input" id="ino-url-input" type="url" placeholder="paste URL..." autocomplete="off" autocorrect="off" spellcheck="false">
+  </div>
+  <div class="ino-name-row">
+    <input class="add-input" id="ino-name-input" type="text" placeholder="short label (e.g. BLOG)" maxlength="20" autocomplete="off" spellcheck="false">
+    <button class="add-confirm" onclick="confirmAddIno()">ADD</button>
+    <button class="add-cancel" onclick="closeInoForm()">✕</button>
+  </div>
+</div>
+<div style="height:8px"></div>
+
+</div>
+
+<footer>
+  <div class="footer-left"><span class="pulse"></span>FEEDECK v1.2</div>
+  <div class="footer-right" id="open-count">0 OPEN</div>
+</footer>
+
+<script>
+const DEFAULT_CATS = [
+  { code:'HW', name:'HARDWARE', links:[
+    {name:'Hardware Unboxed',url:'https://www.youtube.com/@HardwareUnboxed',type:'yt'},
+    {name:'Level1Techs',url:'https://www.youtube.com/@Level1Techs',type:'yt'},
+    {name:'Jeff Geerling',url:'https://www.youtube.com/@JeffGeerling',type:'yt'},
+    {name:'r/hardware',url:'https://www.reddit.com/r/hardware/',type:'rd'},
+    {name:"Tom's Hardware",url:'https://www.tomshardware.com/',type:'rs'},
+    {name:'Hackaday',url:'https://hackaday.com/',type:'rs'},
+  ]},
+  { code:'RT', name:'RETRO', links:[
+    {name:'LGR — Lazy Game Reviews',url:'https://www.youtube.com/@LGR',type:'yt'},
+    {name:'The 8-Bit Guy',url:'https://www.youtube.com/@The8BitGuy',type:'yt'},
+    {name:'Techmoan',url:'https://www.youtube.com/@Techmoan',type:'yt'},
+    {name:'r/retrofuturism',url:'https://www.reddit.com/r/retrofuturism/',type:'rd'},
+    {name:'r/retrobattlestations',url:'https://www.reddit.com/r/retrobattlestations/',type:'rd'},
+    {name:'VCF — Vintage Computer Fed',url:'https://vcfed.org/',type:'rs'},
+  ]},
+  { code:'BLD', name:'BUILDS', links:[
+    {name:'r/cyberDeck',url:'https://www.reddit.com/r/cyberDeck/',type:'rd'},
+    {name:'r/unixporn',url:'https://www.reddit.com/r/unixporn/',type:'rd'},
+    {name:'r/MechanicalKeyboards',url:'https://www.reddit.com/r/MechanicalKeyboards/',type:'rd'},
+    {name:"Wolfgang's Channel",url:'https://www.youtube.com/@WolfgangsChannel',type:'yt'},
+    {name:'GitHub Trending',url:'https://github.com/trending',type:'gh'},
+    {name:'Hackaday',url:'https://hackaday.com/',type:'rs'},
+  ]},
+  { code:'STY', name:'STYLE', links:[
+    {name:'r/techwear',url:'https://www.reddit.com/r/techwear/',type:'rd'},
+    {name:'r/streetwear',url:'https://www.reddit.com/r/streetwear/',type:'rd'},
+    {name:'Hypebeast',url:'https://hypebeast.com/',type:'rs'},
+    {name:'r/PINE64official',url:'https://www.reddit.com/r/PINE64official/',type:'rd'},
+    {name:'PINE64 Blog',url:'https://www.pine64.org/blog/',type:'rs'},
+  ]},
+  { code:'ANI', name:'ANIME', links:[
+    {name:'r/anime — Recs',url:'https://www.reddit.com/r/anime/search/?q=flair%3ARecommendation&sort=new',type:'rd'},
+    {name:'Anime News Network',url:'https://www.animenewsnetwork.com/',type:'rs'},
+    {name:'Canipa Effect',url:'https://www.youtube.com/@CanipaEffect',type:'yt'},
+    {name:'AniList',url:'https://anilist.co/',type:'bl'},
+  ]},
+  { code:'GIT', name:'GITHUB', links:[
+    {name:'GitHub Trending',url:'https://github.com/trending',type:'gh'},
+    {name:'GitHub Explore',url:'https://github.com/explore',type:'gh'},
+    {name:'RPi Imager Releases',url:'https://github.com/raspberrypi/rpi-imager/releases',type:'gh'},
+    {name:'PINE64',url:'https://github.com/pine64',type:'gh'},
+  ]},
+];
+
+const DEFAULT_INO = [
+  {code:'HW',name:'Hardware',sub:"Tom's HW · Hackaday",url:'https://www.inoreader.com/'},
+  {code:'RT',name:'Retro',sub:'LGR · 8-Bit · VCFed',url:'https://www.inoreader.com/'},
+  {code:'BLD',name:'Builds',sub:'cyberDeck · unixporn',url:'https://www.inoreader.com/'},
+  {code:'STY',name:'Style',sub:'techwear · PINE64',url:'https://www.inoreader.com/'},
+  {code:'ANI',name:'Anime',sub:'ANN · r/anime recs',url:'https://www.inoreader.com/'},
+  {code:'GIT',name:'GitHub',sub:'Trending · Releases',url:'https://github.com/trending'},
+];
+
+const TYPEMAP = {yt:'YT',rd:'RDT',rs:'RSS',gh:'GH',bl:'BLOG'};
+
+function detectType(url) {
+  if (!url) return 'rs';
+  const u = url.toLowerCase();
+  if (u.includes('youtube.com') || u.includes('youtu.be')) return 'yt';
+  if (u.includes('reddit.com')) return 'rd';
+  if (u.includes('github.com')) return 'gh';
+  return 'rs';
+}
+
+function nameFromUrl(url) {
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes('youtube.com')) {
+      const p = u.pathname.split('/').filter(Boolean);
+      const seg = p.find(s => s.startsWith('@')) || p[p.length-1];
+      return seg ? seg.replace('@','') : 'YouTube';
+    }
+    if (u.hostname.includes('reddit.com')) {
+      const m = u.pathname.match(/\/r\/([^/]+)/);
+      return m ? 'r/'+m[1] : 'Reddit';
+    }
+    if (u.hostname.includes('github.com')) {
+      const p = u.pathname.split('/').filter(Boolean);
+      return p.length ? p.slice(0,2).join('/') : 'GitHub';
+    }
+    return u.hostname.replace('www.','');
+  } catch(e) { return url.slice(0,30); }
+}
+
+function loadCustomLinks() {
+  try { return JSON.parse(localStorage.getItem('fd_links') || '{}'); } catch(e) { return {}; }
+}
+function saveCustomLinks(data) {
+  try { localStorage.setItem('fd_links', JSON.stringify(data)); } catch(e) {}
+}
+function loadCustomIno() {
+  try { return JSON.parse(localStorage.getItem('fd_ino') || 'null'); } catch(e) { return null; }
+}
+function saveCustomIno(data) {
+  try { localStorage.setItem('fd_ino', JSON.stringify(data)); } catch(e) {}
+}
+function loadRemovedDefaults() {
+  try { return JSON.parse(localStorage.getItem('fd_removed') || '{}'); } catch(e) { return {}; }
+}
+function saveRemovedDefaults(data) {
+  try { localStorage.setItem('fd_removed', JSON.stringify(data)); } catch(e) {}
+}
+function loadRenamedDefaults() {
+  try { return JSON.parse(localStorage.getItem('fd_renamed') || '{}'); } catch(e) { return {}; }
+}
+function saveRenamedDefaults(data) {
+  try { localStorage.setItem('fd_renamed', JSON.stringify(data)); } catch(e) {}
+}
+
+let customLinks = loadCustomLinks();
+let removedDefaults = loadRemovedDefaults();
+let renamedDefaults = loadRenamedDefaults();
+let inoCards = loadCustomIno() || JSON.parse(JSON.stringify(DEFAULT_INO));
+let openPanels = new Set();
+let openAddForm = null;
+// renameTarget: { catCode, isCustom, defIdx, customIdx } or null
+let renameTarget = null;
+
+function renderCategories() {
+  const container = document.getElementById('categories');
+  container.innerHTML = '';
+
+  DEFAULT_CATS.forEach((cat, i) => {
+    const item = document.createElement('div');
+    item.className = 'cat-item';
+    item.id = 'cat-item-' + i;
+
+    const isOpen = openPanels.has(i);
+    const isAddOpen = openAddForm === i;
+    const removed = new Set(removedDefaults[cat.code] || []);
+    const renamed = renamedDefaults[cat.code] || {};
+
+    // Build link list with metadata for rename targeting
+    const defaultLinks = cat.links
+      .map((l, j) => ({...l, _defIdx: j, _custom: false}))
+      .filter(l => !removed.has(l._defIdx))
+      .map(l => ({ ...l, name: renamed[l._defIdx] !== undefined ? renamed[l._defIdx] : l.name }));
+
+    const extras = (customLinks[cat.code] || []);
+    const customLinksList = extras.map((l, j) => ({...l, _defIdx: -1, _customIdx: j, _custom: true}));
+
+    const allLinks = [...defaultLinks, ...customLinksList];
+    const count = allLinks.length;
+
+    // Header
+    const header = document.createElement('div');
+    header.style.cssText = 'display:flex;align-items:center;border-bottom:1px solid var(--border)';
+
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn' + (isOpen ? ' open' : '');
+    btn.style.cssText = 'border-bottom:none;flex:1';
+    btn.innerHTML = `
+      <span class="cat-code">${cat.code}</span>
+      <span class="cat-name">${cat.name}</span>
+      <span class="cat-meta">
+        <span class="link-count">${count}</span>
+        <span class="arrow">&#9654;</span>
+      </span>
+    `;
+    btn.onclick = () => toggleCat(i);
+
+    const plusBtn = document.createElement('button');
+    plusBtn.className = 'plus-btn' + (isAddOpen ? ' active' : '');
+    plusBtn.style.cssText = 'margin-right:14px;flex-shrink:0';
+    plusBtn.title = 'add link';
+    plusBtn.textContent = '+';
+    plusBtn.onclick = (e) => toggleAddForm(e, i);
+
+    header.appendChild(btn);
+    header.appendChild(plusBtn);
+    item.appendChild(header);
+
+    // Add form
+    const addForm = document.createElement('div');
+    addForm.className = 'add-form' + (isAddOpen ? ' open' : '');
+    addForm.id = 'add-form-' + i;
+    addForm.innerHTML = `
+      <div class="add-form-inner">
+        <div class="add-hint">PASTE URL — NAME IS OPTIONAL (AUTO-DETECTED IF BLANK)</div>
+        <div class="add-form-row">
+          <input class="add-input" id="add-url-${i}" type="url" placeholder="paste URL..." autocomplete="off" autocorrect="off" spellcheck="false">
+        </div>
+        <div class="add-form-row">
+          <input class="add-input" id="add-name-${i}" type="text" placeholder="custom name (optional)" maxlength="60" autocomplete="off" spellcheck="false"
+            onkeydown="addKeydown(event,${i})">
+          <button class="add-confirm" onclick="confirmAdd(${i})">ADD</button>
+          <button class="add-cancel" onclick="closeAddForm(${i})">✕</button>
+        </div>
+      </div>
+    `;
+    item.appendChild(addForm);
+
+    // Panel
+    const panel = document.createElement('div');
+    panel.className = 'cat-panel' + (isOpen ? ' open' : '');
+    panel.id = 'panel-' + i;
+
+    const linkList = document.createElement('div');
+    linkList.className = 'link-list';
+
+    allLinks.forEach((l) => {
+      const isCustom = l._custom;
+      const isRenaming = renameTarget &&
+        renameTarget.catCode === cat.code &&
+        (isCustom
+          ? renameTarget.isCustom && renameTarget.customIdx === l._customIdx
+          : !renameTarget.isCustom && renameTarget.defIdx === l._defIdx);
+
+      // Link row
+      const row = document.createElement('div');
+      row.className = 'link-item';
+
+      const anchor = document.createElement('a');
+      anchor.className = 'link-anchor';
+      anchor.href = l.url;
+      anchor.target = '_blank';
+      anchor.rel = 'noopener';
+      anchor.innerHTML = `
+        <span class="link-dot${isCustom ? ' custom' : ''}"></span>
+        <span class="link-name">${l.name}</span>
+        <span class="ptag ${l.type}">${TYPEMAP[l.type] || 'RSS'}</span>
+      `;
+
+      const actions = document.createElement('div');
+      actions.className = 'link-actions';
+
+      // Rename button (pencil)
+      const renameBtn = document.createElement('button');
+      renameBtn.className = 'link-btn';
+      renameBtn.title = 'rename';
+      renameBtn.innerHTML = '✎';
+      renameBtn.style.color = isRenaming ? 'var(--acc2)' : '';
+      renameBtn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isRenaming) {
+          renameTarget = null;
+        } else {
+          renameTarget = isCustom
+            ? { catCode: cat.code, isCustom: true, customIdx: l._customIdx }
+            : { catCode: cat.code, isCustom: false, defIdx: l._defIdx };
+          openPanels.add(i);
+        }
+        renderCategories();
+        if (renameTarget) {
+          setTimeout(() => {
+            const inp = document.getElementById('rename-input-active');
+            if (inp) { inp.focus(); inp.select(); }
+          }, 60);
+        }
+      };
+
+      // Delete button
+      const delBtn = document.createElement('button');
+      delBtn.className = 'link-btn link-del';
+      delBtn.title = 'remove';
+      delBtn.innerHTML = '✕';
+      delBtn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (renameTarget) { renameTarget = null; }
+        if (isCustom) {
+          customLinks[cat.code].splice(l._customIdx, 1);
+          saveCustomLinks(customLinks);
+        } else {
+          if (!removedDefaults[cat.code]) removedDefaults[cat.code] = [];
+          if (!removedDefaults[cat.code].includes(l._defIdx)) removedDefaults[cat.code].push(l._defIdx);
+          saveRemovedDefaults(removedDefaults);
+        }
+        renderCategories();
+      };
+
+      actions.appendChild(renameBtn);
+      actions.appendChild(delBtn);
+      row.appendChild(anchor);
+      row.appendChild(actions);
+      linkList.appendChild(row);
+
+      // Inline rename row
+      if (isRenaming) {
+        const renameRow = document.createElement('div');
+        renameRow.className = 'rename-row';
+        renameRow.innerHTML = `
+          <input class="add-input" id="rename-input-active" type="text"
+            value="${l.name}" maxlength="60" autocomplete="off" spellcheck="false"
+            placeholder="new name...">
+          <button class="rename-confirm" onclick="confirmRename()">OK</button>
+          <button class="rename-cancel" onclick="cancelRename()">✕</button>
+        `;
+        renameRow.querySelector('input').onkeydown = (e) => {
+          if (e.key === 'Enter') confirmRename();
+          if (e.key === 'Escape') cancelRename();
+        };
+        linkList.appendChild(renameRow);
+      }
+    });
+
+    panel.appendChild(linkList);
+    item.appendChild(panel);
+    container.appendChild(item);
+  });
+
+  updateFooter();
+}
+
+function toggleCat(i) {
+  if (openPanels.has(i)) {
+    openPanels.delete(i);
+    renameTarget = null;
+  } else {
+    openPanels.add(i);
+  }
+  renderCategories();
+  if (openPanels.has(i)) {
+    setTimeout(() => {
+      const panel = document.getElementById('panel-' + i);
+      if (panel) panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }, 50);
+  }
+}
+
+function toggleAddForm(e, i) {
+  e.stopPropagation();
+  openAddForm = (openAddForm === i) ? null : i;
+  renderCategories();
+  if (openAddForm === i) {
+    setTimeout(() => {
+      const inp = document.getElementById('add-url-' + i);
+      if (inp) inp.focus();
+    }, 80);
+  }
+}
+
+function closeAddForm(i) {
+  openAddForm = null;
+  renderCategories();
+}
+
+function addKeydown(e, i) {
+  if (e.key === 'Enter') confirmAdd(i);
+  if (e.key === 'Escape') closeAddForm(i);
+}
+
+function confirmAdd(i) {
+  const urlInp = document.getElementById('add-url-' + i);
+  const nameInp = document.getElementById('add-name-' + i);
+  if (!urlInp) return;
+  const url = urlInp.value.trim();
+  if (!url) return;
+  const rawName = nameInp ? nameInp.value.trim() : '';
+  const name = rawName || nameFromUrl(url);
+  const type = detectType(url);
+  const cat = DEFAULT_CATS[i];
+  if (!customLinks[cat.code]) customLinks[cat.code] = [];
+  customLinks[cat.code].push({name, url, type});
+  saveCustomLinks(customLinks);
+  openPanels.add(i);
+  openAddForm = null;
+  renderCategories();
+}
+
+function confirmRename() {
+  if (!renameTarget) return;
+  const inp = document.getElementById('rename-input-active');
+  if (!inp) return;
+  const newName = inp.value.trim();
+  if (!newName) { cancelRename(); return; }
+
+  if (renameTarget.isCustom) {
+    if (!customLinks[renameTarget.catCode]) return;
+    customLinks[renameTarget.catCode][renameTarget.customIdx].name = newName;
+    saveCustomLinks(customLinks);
+  } else {
+    if (!renamedDefaults[renameTarget.catCode]) renamedDefaults[renameTarget.catCode] = {};
+    renamedDefaults[renameTarget.catCode][renameTarget.defIdx] = newName;
+    saveRenamedDefaults(renamedDefaults);
+  }
+  renameTarget = null;
+  renderCategories();
+}
+
+function cancelRename() {
+  renameTarget = null;
+  renderCategories();
+}
+
+function updateFooter() {
+  document.getElementById('open-count').textContent = openPanels.size + ' OPEN';
+}
+
+/* INO GRID */
+function renderIno() {
+  const grid = document.getElementById('ino-grid');
+  grid.innerHTML = '';
+  inoCards.forEach((c, i) => {
+    const a = document.createElement('a');
+    a.className = 'ino-card';
+    a.href = c.url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.innerHTML = `
+      <div class="ino-code">${c.code}
+        <button class="ino-del" onclick="delIno(event,${i})" title="remove">✕</button>
+      </div>
+      <div class="ino-name">${c.name}</div>
+      <div class="ino-sub">${c.sub||''}</div>
+    `;
+    grid.appendChild(a);
+  });
+
+  const addCard = document.createElement('div');
+  addCard.className = 'ino-add-card';
+  addCard.onclick = openInoForm;
+  addCard.innerHTML = `<span style="font-family:'Share Tech Mono',monospace;font-size:18px;color:var(--muted)">+</span><span class="ino-add-label">ADD</span>`;
+  grid.appendChild(addCard);
+}
+
+function delIno(e, i) {
+  e.preventDefault();
+  e.stopPropagation();
+  inoCards.splice(i, 1);
+  saveCustomIno(inoCards);
+  renderIno();
+}
+
+function openInoForm() {
+  const form = document.getElementById('ino-add-form');
+  form.classList.add('open');
+  document.getElementById('ino-url-input').value = '';
+  document.getElementById('ino-name-input').value = '';
+  setTimeout(() => document.getElementById('ino-url-input').focus(), 80);
+}
+
+function closeInoForm() {
+  document.getElementById('ino-add-form').classList.remove('open');
+}
+
+function confirmAddIno() {
+  const url = document.getElementById('ino-url-input').value.trim();
+  const rawName = document.getElementById('ino-name-input').value.trim();
+  if (!url) return;
+  const name = rawName || nameFromUrl(url);
+  const code = name.slice(0,3).toUpperCase();
+  const sub = (() => { try { return new URL(url).hostname.replace('www.',''); } catch(e){ return ''; } })();
+  inoCards.push({code, name, sub, url});
+  saveCustomIno(inoCards);
+  closeInoForm();
+  renderIno();
+}
+
+/* CLOCK */
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('clock').textContent = h + ':' + m;
+  const days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  document.getElementById('dateline').textContent =
+    days[now.getDay()] + ' ' + String(now.getDate()).padStart(2,'0') + ' ' + months[now.getMonth()];
+}
+
+renderCategories();
+renderIno();
+updateClock();
+setInterval(updateClock, 10000);
+
+(function() {
+  const m = {
+    name: 'FEEDECK', short_name: 'FEEDECK', description: 'Personal feed terminal',
+    display: 'standalone', orientation: 'portrait',
+    background_color: '#080807', theme_color: '#080807',
+    start_url: window.location.href,
+    icons: [{
+      src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%23080807'/><text x='60' y='380' font-family='monospace' font-size='380' font-weight='bold' fill='%23c8ff00'>F</text><rect x='60' y='410' width='320' height='14' fill='%23c8ff00'/></svg>",
+      sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable'
+    }]
+  };
+  try {
+    const blob = new Blob([JSON.stringify(m)], {type: 'application/manifest+json'});
+    document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>
