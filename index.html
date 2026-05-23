@@ -47,6 +47,28 @@ header { padding: 20px 16px 14px; border-bottom: 1px solid var(--border); displa
 /* SECTION LABEL */
 .sec-label { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.18em; color: var(--muted); padding: 14px 16px 6px; }
 
+/* ADD CATEGORY BUTTON */
+.new-cat-btn {
+  display: flex; align-items: center; gap: 10px;
+  width: calc(100% - 32px); margin: 8px 16px 4px;
+  background: none; border: 1px dashed var(--border); border-radius: 2px;
+  padding: 13px 16px; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+  min-height: 48px;
+}
+.new-cat-btn:active { background: var(--s2); border-color: var(--acc2); }
+.new-cat-btn span { font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: var(--muted); }
+.new-cat-plus { font-size: 18px; color: var(--muted); line-height: 1; }
+
+/* NEW CAT FORM */
+.new-cat-form {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.22s cubic-bezier(0.4,0,0.2,1);
+  background: var(--s2); border-bottom: 1px solid var(--border);
+}
+.new-cat-form.open { max-height: 160px; }
+.new-cat-form-inner { padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 10px; }
+.new-cat-row { display: flex; gap: 8px; align-items: center; }
+
 /* CATEGORY ROWS */
 .cat-item { border-bottom: 1px solid var(--border); }
 .cat-btn {
@@ -76,6 +98,17 @@ header { padding: 20px 16px 14px; border-bottom: 1px solid var(--border); displa
   transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 .plus-btn:active, .plus-btn.active { color: var(--acc); border-color: var(--acc2); background: var(--acc3); }
+
+/* DELETE CATEGORY BUTTON */
+.del-cat-btn {
+  font-size: 12px; line-height: 1; color: var(--yt);
+  background: none; border: 1px solid rgba(255,69,69,0.3); border-radius: 2px;
+  min-width: 34px; height: 34px; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  margin-right: 4px;
+}
+.del-cat-btn:active { background: rgba(255,69,69,0.15); border-color: var(--yt); }
 
 .arrow { font-size: 12px; color: var(--muted); transition: transform 0.2s; }
 .cat-btn.open .arrow { transform: rotate(90deg); color: var(--acc); }
@@ -115,8 +148,8 @@ header { padding: 20px 16px 14px; border-bottom: 1px solid var(--border); displa
 .add-hint { font-size: 10px; color: var(--muted); letter-spacing: 0.05em; }
 
 /* EXPANDED PANEL */
-.cat-panel { max-height: 0; overflow: hidden; transition: max-height 0.28s cubic-bezier(0.4,0,0.2,1); background: var(--s1); }
-.cat-panel.open { max-height: 1200px; }
+.cat-panel { max-height: 0; overflow: hidden; background: var(--s1); }
+.cat-panel.open { max-height: 1200px; transition: max-height 0.28s cubic-bezier(0.4,0,0.2,1); }
 .link-list { padding: 4px 0 10px; }
 .link-item {
   display: flex; align-items: center; gap: 10px;
@@ -146,7 +179,7 @@ header { padding: 20px 16px 14px; border-bottom: 1px solid var(--border); displa
 .link-btn:active { color: var(--acc2); }
 .link-del:active { color: var(--yt) !important; }
 
-/* RENAME ROW — inline below a link */
+/* RENAME ROW */
 .rename-row {
   display: flex; gap: 8px; align-items: center;
   padding: 0 12px 10px 20px; background: var(--s1);
@@ -175,7 +208,7 @@ header { padding: 20px 16px 14px; border-bottom: 1px solid var(--border); displa
 }
 .ino-card:active { background: var(--s2); border-color: var(--acc3); }
 .ino-code { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.15em; color: var(--acc2); display: flex; align-items: center; justify-content: space-between; }
-.ino-del { font-size: 13px; color: var(--dim); background: none; border: none; cursor: pointer; line-height: 1; transition: color 0.15s; }
+.ino-del { font-size: 13px; color: var(--dim); background: none; border: none; cursor: pointer; line-height: 1; transition: color 0.15s; min-width: 24px; min-height: 24px; }
 .ino-del:active { color: var(--yt); }
 .ino-name { font-size: 12px; color: var(--text); }
 .ino-sub { font-size: 10px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -208,11 +241,7 @@ footer {
 .pulse { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--acc); margin-right: 5px; vertical-align: 0px; animation: pulse 2s ease-in-out infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-@keyframes fadeUp { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
-.cat-item { animation: fadeUp 0.3s ease both; }
-.cat-item:nth-child(1){animation-delay:0.05s} .cat-item:nth-child(2){animation-delay:0.10s}
-.cat-item:nth-child(3){animation-delay:0.15s} .cat-item:nth-child(4){animation-delay:0.20s}
-.cat-item:nth-child(5){animation-delay:0.25s} .cat-item:nth-child(6){animation-delay:0.30s}
+
 </style>
 </head>
 <body>
@@ -236,6 +265,26 @@ footer {
 <div class="sec-label">// FEED CATEGORIES</div>
 <div id="categories"></div>
 
+<!-- NEW CATEGORY FORM -->
+<div class="new-cat-form" id="new-cat-form">
+  <div class="new-cat-form-inner">
+    <div class="add-hint">NEW CATEGORY — CODE (3-4 CHARS) + NAME</div>
+    <div class="new-cat-row">
+      <input class="add-input" id="nc-code" type="text" placeholder="CODE" maxlength="4"
+        style="max-width:80px;text-transform:uppercase" autocomplete="off" spellcheck="false">
+      <input class="add-input" id="nc-name" type="text" placeholder="CATEGORY NAME" maxlength="24"
+        style="text-transform:uppercase" autocomplete="off" spellcheck="false"
+        onkeydown="if(event.key==='Enter')confirmNewCat();if(event.key==='Escape')closeNewCatForm();">
+      <button class="add-confirm" onclick="confirmNewCat()">ADD</button>
+      <button class="add-cancel" onclick="closeNewCatForm()">✕</button>
+    </div>
+  </div>
+</div>
+<button class="new-cat-btn" id="new-cat-btn" onclick="toggleNewCatForm()">
+  <span class="new-cat-plus">+</span>
+  <span>NEW CATEGORY</span>
+</button>
+
 <div class="sec-label">// QUICK ACCESS — INOREADER FOLDERS</div>
 <div class="ino-grid" id="ino-grid"></div>
 <div class="ino-add-form" id="ino-add-form">
@@ -254,7 +303,7 @@ footer {
 </div>
 
 <footer>
-  <div class="footer-left"><span class="pulse"></span>FEEDECK v1.2</div>
+  <div class="footer-left"><span class="pulse"></span>FEEDECK v1.4</div>
   <div class="footer-right" id="open-count">0 OPEN</div>
 </footer>
 
@@ -345,56 +394,145 @@ function nameFromUrl(url) {
   } catch(e) { return url.slice(0,30); }
 }
 
-function loadCustomLinks() {
-  try { return JSON.parse(localStorage.getItem('fd_links') || '{}'); } catch(e) { return {}; }
-}
-function saveCustomLinks(data) {
-  try { localStorage.setItem('fd_links', JSON.stringify(data)); } catch(e) {}
-}
-function loadCustomIno() {
-  try { return JSON.parse(localStorage.getItem('fd_ino') || 'null'); } catch(e) { return null; }
-}
-function saveCustomIno(data) {
-  try { localStorage.setItem('fd_ino', JSON.stringify(data)); } catch(e) {}
-}
-function loadRemovedDefaults() {
-  try { return JSON.parse(localStorage.getItem('fd_removed') || '{}'); } catch(e) { return {}; }
-}
-function saveRemovedDefaults(data) {
-  try { localStorage.setItem('fd_removed', JSON.stringify(data)); } catch(e) {}
-}
-function loadRenamedDefaults() {
-  try { return JSON.parse(localStorage.getItem('fd_renamed') || '{}'); } catch(e) { return {}; }
-}
-function saveRenamedDefaults(data) {
-  try { localStorage.setItem('fd_renamed', JSON.stringify(data)); } catch(e) {}
+/* STORAGE */
+function loadCustomLinks()    { try { return JSON.parse(localStorage.getItem('fd_links')   || '{}');   } catch(e) { return {}; } }
+function saveCustomLinks(d)   { try { localStorage.setItem('fd_links',   JSON.stringify(d)); } catch(e) {} }
+function loadCustomIno()      { try { return JSON.parse(localStorage.getItem('fd_ino')     || 'null'); } catch(e) { return null; } }
+function saveCustomIno(d)     { try { localStorage.setItem('fd_ino',     JSON.stringify(d)); } catch(e) {} }
+function loadRemovedDefaults(){ try { return JSON.parse(localStorage.getItem('fd_removed') || '{}');   } catch(e) { return {}; } }
+function saveRemovedDefaults(d){ try { localStorage.setItem('fd_removed', JSON.stringify(d)); } catch(e) {} }
+function loadRenamedDefaults(){ try { return JSON.parse(localStorage.getItem('fd_renamed') || '{}');   } catch(e) { return {}; } }
+function saveRenamedDefaults(d){ try { localStorage.setItem('fd_renamed', JSON.stringify(d)); } catch(e) {} }
+// Custom categories: array of { code, name }  — links stored in customLinks keyed by code
+function loadCustomCats()       { try { return JSON.parse(localStorage.getItem('fd_cats')         || '[]');  } catch(e) { return []; } }
+function saveCustomCats(d)      { try { localStorage.setItem('fd_cats',         JSON.stringify(d)); } catch(e) {} }
+// Removed default category codes
+function loadRemovedDefCats()   { try { return JSON.parse(localStorage.getItem('fd_removed_cats') || '[]');  } catch(e) { return []; } }
+function saveRemovedDefCats(d)  { try { localStorage.setItem('fd_removed_cats', JSON.stringify(d)); } catch(e) {} }
+
+let customLinks     = loadCustomLinks();
+let removedDefaults  = loadRemovedDefaults();
+let renamedDefaults  = loadRenamedDefaults();
+let customCats      = loadCustomCats();
+let removedDefCats  = loadRemovedDefCats();
+let inoCards       = loadCustomIno() || JSON.parse(JSON.stringify(DEFAULT_INO));
+let openPanels     = new Set();
+let openAddForm    = null;   // key string: 'def-{i}' or 'cust-{i}'
+let renameTarget   = null;
+let newCatFormOpen = false;
+
+/* Build unified list: default cats (minus removed) + custom cats */
+function allCats() {
+  return [
+    ...DEFAULT_CATS
+      .map((c, i) => ({ ...c, _isDefault: true, _defIdx: i }))
+      .filter(c => !removedDefCats.includes(c.code)),
+    ...customCats.map((c, i) => ({ ...c, links: [], _isDefault: false, _custIdx: i })),
+  ];
 }
 
-let customLinks = loadCustomLinks();
-let removedDefaults = loadRemovedDefaults();
-let renamedDefaults = loadRenamedDefaults();
-let inoCards = loadCustomIno() || JSON.parse(JSON.stringify(DEFAULT_INO));
-let openPanels = new Set();
-let openAddForm = null;
-// renameTarget: { catCode, isCustom, defIdx, customIdx } or null
-let renameTarget = null;
+function deleteDefaultCat(code) {
+  openPanels.delete('def-' + DEFAULT_CATS.findIndex(c => c.code === code));
+  if (openAddForm && openAddForm.startsWith('def-')) {
+    const idx = parseInt(openAddForm.replace('def-',''));
+    if (DEFAULT_CATS[idx] && DEFAULT_CATS[idx].code === code) openAddForm = null;
+  }
+  removedDefCats.push(code);
+  saveRemovedDefCats(removedDefCats);
+  renderCategories();
+}
 
+function catKey(cat) {
+  // unique key used for openAddForm, openPanels, etc.
+  return cat._isDefault ? 'def-' + cat._defIdx : 'cust-' + cat._custIdx;
+}
+
+/* ── NEW CATEGORY FORM ── */
+function toggleNewCatForm() {
+  newCatFormOpen = !newCatFormOpen;
+  const form = document.getElementById('new-cat-form');
+  const btn  = document.getElementById('new-cat-btn');
+  form.classList.toggle('open', newCatFormOpen);
+  btn.style.borderColor = newCatFormOpen ? 'var(--acc2)' : '';
+  btn.querySelector('span:last-child').style.color = newCatFormOpen ? 'var(--acc2)' : '';
+  if (newCatFormOpen) {
+    setTimeout(() => { const i = document.getElementById('nc-code'); if(i) i.focus(); }, 80);
+  }
+}
+
+function closeNewCatForm() {
+  newCatFormOpen = false;
+  const form = document.getElementById('new-cat-form');
+  const btn  = document.getElementById('new-cat-btn');
+  if (form) form.classList.remove('open');
+  if (btn) { btn.style.borderColor = ''; btn.querySelector('span:last-child').style.color = ''; }
+  const ci = document.getElementById('nc-code');
+  const ni = document.getElementById('nc-name');
+  if (ci) ci.value = '';
+  if (ni) ni.value = '';
+}
+
+function confirmNewCat() {
+  const codeEl = document.getElementById('nc-code');
+  const nameEl = document.getElementById('nc-name');
+  const code = codeEl.value.trim().toUpperCase().slice(0, 4);
+  const name = nameEl.value.trim().toUpperCase();
+  if (!code || !name) return;
+  // Prevent duplicate codes
+  const taken = [...DEFAULT_CATS.map(c=>c.code), ...customCats.map(c=>c.code)];
+  if (taken.includes(code)) {
+    codeEl.style.borderColor = 'var(--yt)';
+    setTimeout(() => { codeEl.style.borderColor = ''; }, 1200);
+    return;
+  }
+  customCats.push({ code, name });
+  saveCustomCats(customCats);
+  closeNewCatForm();
+  renderCategories();
+  // Auto-open the new category
+  const key = 'cust-' + (customCats.length - 1);
+  openPanels.add(key);
+  renderCategories();
+}
+
+/* ── DELETE CATEGORY (custom only) ── */
+function deleteCustomCat(custIdx) {
+  const cat = customCats[custIdx];
+  if (!cat) return;
+  // Clean up links and open state
+  delete customLinks[cat.code];
+  saveCustomLinks(customLinks);
+  openPanels.delete('cust-' + custIdx);
+  if (openAddForm === 'cust-' + custIdx) openAddForm = null;
+  customCats.splice(custIdx, 1);
+  saveCustomCats(customCats);
+  // Re-index open panels for custom cats that shifted
+  const newOpen = new Set();
+  openPanels.forEach(k => {
+    if (k.startsWith('def-')) { newOpen.add(k); return; }
+    const idx = parseInt(k.replace('cust-',''));
+    if (idx < custIdx) newOpen.add(k);
+    else if (idx > custIdx) newOpen.add('cust-' + (idx - 1));
+  });
+  openPanels = newOpen;
+  renderCategories();
+}
+
+/* ── RENDER ── */
 function renderCategories() {
   const container = document.getElementById('categories');
   container.innerHTML = '';
 
-  DEFAULT_CATS.forEach((cat, i) => {
-    const item = document.createElement('div');
-    item.className = 'cat-item';
-    item.id = 'cat-item-' + i;
+  allCats().forEach((cat) => {
+    const key = catKey(cat);
+    const isOpen    = openPanels.has(key);
+    const isAddOpen = openAddForm === key;
+    const isDefault = cat._isDefault;
 
-    const isOpen = openPanels.has(i);
-    const isAddOpen = openAddForm === i;
-    const removed = new Set(removedDefaults[cat.code] || []);
-    const renamed = renamedDefaults[cat.code] || {};
+    const removed = new Set(isDefault ? (removedDefaults[cat.code] || []) : []);
+    const renamed  = isDefault ? (renamedDefaults[cat.code] || {}) : {};
 
-    // Build link list with metadata for rename targeting
-    const defaultLinks = cat.links
+    const defaultLinks = (cat.links || [])
       .map((l, j) => ({...l, _defIdx: j, _custom: false}))
       .filter(l => !removed.has(l._defIdx))
       .map(l => ({ ...l, name: renamed[l._defIdx] !== undefined ? renamed[l._defIdx] : l.name }));
@@ -403,9 +541,12 @@ function renderCategories() {
     const customLinksList = extras.map((l, j) => ({...l, _defIdx: -1, _customIdx: j, _custom: true}));
 
     const allLinks = [...defaultLinks, ...customLinksList];
-    const count = allLinks.length;
+    const count    = allLinks.length;
 
-    // Header
+    const item = document.createElement('div');
+    item.className = 'cat-item';
+
+    // ── Header row ──
     const header = document.createElement('div');
     header.style.cssText = 'display:flex;align-items:center;border-bottom:1px solid var(--border)';
 
@@ -420,46 +561,68 @@ function renderCategories() {
         <span class="arrow">&#9654;</span>
       </span>
     `;
-    btn.onclick = () => toggleCat(i);
+    btn.onclick = () => toggleCat(key);
+    header.appendChild(btn);
+
+    // Delete button — all categories
+    const delCatBtn = document.createElement('button');
+    delCatBtn.className = 'del-cat-btn';
+    delCatBtn.title = 'delete category';
+    delCatBtn.innerHTML = '✕';
+    delCatBtn.onclick = (e) => {
+      e.stopPropagation();
+      if (isDefault) {
+        deleteDefaultCat(cat.code);
+      } else {
+        deleteCustomCat(cat._custIdx);
+      }
+    };
+    header.appendChild(delCatBtn);
 
     const plusBtn = document.createElement('button');
     plusBtn.className = 'plus-btn' + (isAddOpen ? ' active' : '');
-    plusBtn.style.cssText = 'margin-right:14px;flex-shrink:0';
+    plusBtn.style.cssText = 'margin-right:14px;margin-left:4px;flex-shrink:0';
     plusBtn.title = 'add link';
     plusBtn.textContent = '+';
-    plusBtn.onclick = (e) => toggleAddForm(e, i);
-
-    header.appendChild(btn);
+    plusBtn.onclick = (e) => toggleAddForm(e, key);
     header.appendChild(plusBtn);
+
     item.appendChild(header);
 
-    // Add form
+    // ── Add link form ──
     const addForm = document.createElement('div');
     addForm.className = 'add-form' + (isAddOpen ? ' open' : '');
-    addForm.id = 'add-form-' + i;
     addForm.innerHTML = `
       <div class="add-form-inner">
         <div class="add-hint">PASTE URL — NAME IS OPTIONAL (AUTO-DETECTED IF BLANK)</div>
         <div class="add-form-row">
-          <input class="add-input" id="add-url-${i}" type="url" placeholder="paste URL..." autocomplete="off" autocorrect="off" spellcheck="false">
+          <input class="add-input" id="add-url-${key}" type="url" placeholder="paste URL..."
+            autocomplete="off" autocorrect="off" spellcheck="false">
         </div>
         <div class="add-form-row">
-          <input class="add-input" id="add-name-${i}" type="text" placeholder="custom name (optional)" maxlength="60" autocomplete="off" spellcheck="false"
-            onkeydown="addKeydown(event,${i})">
-          <button class="add-confirm" onclick="confirmAdd(${i})">ADD</button>
-          <button class="add-cancel" onclick="closeAddForm(${i})">✕</button>
+          <input class="add-input" id="add-name-${key}" type="text"
+            placeholder="custom name (optional)" maxlength="60" autocomplete="off" spellcheck="false"
+            onkeydown="addKeydown(event,'${key}')">
+          <button class="add-confirm" onclick="confirmAdd('${key}','${cat.code}')">ADD</button>
+          <button class="add-cancel" onclick="closeAddForm('${key}')">✕</button>
         </div>
       </div>
     `;
     item.appendChild(addForm);
 
-    // Panel
+    // ── Expanded panel ──
     const panel = document.createElement('div');
     panel.className = 'cat-panel' + (isOpen ? ' open' : '');
-    panel.id = 'panel-' + i;
 
     const linkList = document.createElement('div');
     linkList.className = 'link-list';
+
+    if (allLinks.length === 0) {
+      const empty = document.createElement('div');
+      empty.style.cssText = 'padding:14px 20px;font-size:11px;color:var(--muted);font-family:Share Tech Mono,monospace;letter-spacing:0.1em';
+      empty.textContent = 'NO LINKS YET — TAP + TO ADD';
+      linkList.appendChild(empty);
+    }
 
     allLinks.forEach((l) => {
       const isCustom = l._custom;
@@ -469,7 +632,6 @@ function renderCategories() {
           ? renameTarget.isCustom && renameTarget.customIdx === l._customIdx
           : !renameTarget.isCustom && renameTarget.defIdx === l._defIdx);
 
-      // Link row
       const row = document.createElement('div');
       row.className = 'link-item';
 
@@ -487,41 +649,35 @@ function renderCategories() {
       const actions = document.createElement('div');
       actions.className = 'link-actions';
 
-      // Rename button (pencil)
       const renameBtn = document.createElement('button');
       renameBtn.className = 'link-btn';
       renameBtn.title = 'rename';
       renameBtn.innerHTML = '✎';
       renameBtn.style.color = isRenaming ? 'var(--acc2)' : '';
       renameBtn.onclick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+        e.preventDefault(); e.stopPropagation();
         if (isRenaming) {
           renameTarget = null;
         } else {
           renameTarget = isCustom
-            ? { catCode: cat.code, isCustom: true, customIdx: l._customIdx }
+            ? { catCode: cat.code, isCustom: true,  customIdx: l._customIdx }
             : { catCode: cat.code, isCustom: false, defIdx: l._defIdx };
-          openPanels.add(i);
+          openPanels.add(key);
         }
         renderCategories();
-        if (renameTarget) {
-          setTimeout(() => {
-            const inp = document.getElementById('rename-input-active');
-            if (inp) { inp.focus(); inp.select(); }
-          }, 60);
-        }
+        if (renameTarget) setTimeout(() => {
+          const inp = document.getElementById('rename-input-active');
+          if (inp) { inp.focus(); inp.select(); }
+        }, 60);
       };
 
-      // Delete button
       const delBtn = document.createElement('button');
       delBtn.className = 'link-btn link-del';
       delBtn.title = 'remove';
       delBtn.innerHTML = '✕';
       delBtn.onclick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (renameTarget) { renameTarget = null; }
+        e.preventDefault(); e.stopPropagation();
+        renameTarget = null;
         if (isCustom) {
           customLinks[cat.code].splice(l._customIdx, 1);
           saveCustomLinks(customLinks);
@@ -539,14 +695,12 @@ function renderCategories() {
       row.appendChild(actions);
       linkList.appendChild(row);
 
-      // Inline rename row
       if (isRenaming) {
         const renameRow = document.createElement('div');
         renameRow.className = 'rename-row';
         renameRow.innerHTML = `
           <input class="add-input" id="rename-input-active" type="text"
-            value="${l.name}" maxlength="60" autocomplete="off" spellcheck="false"
-            placeholder="new name...">
+            value="${l.name}" maxlength="60" autocomplete="off" spellcheck="false" placeholder="new name...">
           <button class="rename-confirm" onclick="confirmRename()">OK</button>
           <button class="rename-cancel" onclick="cancelRename()">✕</button>
         `;
@@ -566,58 +720,63 @@ function renderCategories() {
   updateFooter();
 }
 
-function toggleCat(i) {
-  if (openPanels.has(i)) {
-    openPanels.delete(i);
+function toggleCat(key) {
+  if (openPanels.has(key)) {
+    openPanels.delete(key);
     renameTarget = null;
   } else {
-    openPanels.add(i);
+    openPanels.add(key);
   }
   renderCategories();
-  if (openPanels.has(i)) {
+  if (openPanels.has(key)) {
     setTimeout(() => {
-      const panel = document.getElementById('panel-' + i);
-      if (panel) panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+      const items = document.querySelectorAll('.cat-item');
+      const keys = [...allCats().map(catKey)];
+      const idx = keys.indexOf(key);
+      if (items[idx]) items[idx].scrollIntoView({behavior:'smooth', block:'nearest'});
     }, 50);
   }
 }
 
-function toggleAddForm(e, i) {
+function toggleAddForm(e, key) {
   e.stopPropagation();
-  openAddForm = (openAddForm === i) ? null : i;
+  openAddForm = (openAddForm === key) ? null : key;
   renderCategories();
-  if (openAddForm === i) {
+  if (openAddForm === key) {
     setTimeout(() => {
-      const inp = document.getElementById('add-url-' + i);
+      const inp = document.getElementById('add-url-' + key);
       if (inp) inp.focus();
     }, 80);
   }
 }
 
-function closeAddForm(i) {
+function closeAddForm(key) {
   openAddForm = null;
   renderCategories();
 }
 
-function addKeydown(e, i) {
-  if (e.key === 'Enter') confirmAdd(i);
-  if (e.key === 'Escape') closeAddForm(i);
+function addKeydown(e, key) {
+  if (e.key === 'Enter') {
+    const cats = allCats();
+    const cat = cats.find(c => catKey(c) === key);
+    if (cat) confirmAdd(key, cat.code);
+  }
+  if (e.key === 'Escape') closeAddForm(key);
 }
 
-function confirmAdd(i) {
-  const urlInp = document.getElementById('add-url-' + i);
-  const nameInp = document.getElementById('add-name-' + i);
+function confirmAdd(key, code) {
+  const urlInp  = document.getElementById('add-url-'  + key);
+  const nameInp = document.getElementById('add-name-' + key);
   if (!urlInp) return;
   const url = urlInp.value.trim();
   if (!url) return;
   const rawName = nameInp ? nameInp.value.trim() : '';
   const name = rawName || nameFromUrl(url);
   const type = detectType(url);
-  const cat = DEFAULT_CATS[i];
-  if (!customLinks[cat.code]) customLinks[cat.code] = [];
-  customLinks[cat.code].push({name, url, type});
+  if (!customLinks[code]) customLinks[code] = [];
+  customLinks[code].push({name, url, type});
   saveCustomLinks(customLinks);
-  openPanels.add(i);
+  openPanels.add(key);
   openAddForm = null;
   renderCategories();
 }
@@ -628,7 +787,6 @@ function confirmRename() {
   if (!inp) return;
   const newName = inp.value.trim();
   if (!newName) { cancelRename(); return; }
-
   if (renameTarget.isCustom) {
     if (!customLinks[renameTarget.catCode]) return;
     customLinks[renameTarget.catCode][renameTarget.customIdx].name = newName;
@@ -651,7 +809,7 @@ function updateFooter() {
   document.getElementById('open-count').textContent = openPanels.size + ' OPEN';
 }
 
-/* INO GRID */
+/* ── INO GRID ── */
 function renderIno() {
   const grid = document.getElementById('ino-grid');
   grid.innerHTML = '';
@@ -670,7 +828,6 @@ function renderIno() {
     `;
     grid.appendChild(a);
   });
-
   const addCard = document.createElement('div');
   addCard.className = 'ino-add-card';
   addCard.onclick = openInoForm;
@@ -679,16 +836,14 @@ function renderIno() {
 }
 
 function delIno(e, i) {
-  e.preventDefault();
-  e.stopPropagation();
+  e.preventDefault(); e.stopPropagation();
   inoCards.splice(i, 1);
   saveCustomIno(inoCards);
   renderIno();
 }
 
 function openInoForm() {
-  const form = document.getElementById('ino-add-form');
-  form.classList.add('open');
+  document.getElementById('ino-add-form').classList.add('open');
   document.getElementById('ino-url-input').value = '';
   document.getElementById('ino-name-input').value = '';
   setTimeout(() => document.getElementById('ino-url-input').focus(), 80);
@@ -699,25 +854,24 @@ function closeInoForm() {
 }
 
 function confirmAddIno() {
-  const url = document.getElementById('ino-url-input').value.trim();
+  const url     = document.getElementById('ino-url-input').value.trim();
   const rawName = document.getElementById('ino-name-input').value.trim();
   if (!url) return;
   const name = rawName || nameFromUrl(url);
   const code = name.slice(0,3).toUpperCase();
-  const sub = (() => { try { return new URL(url).hostname.replace('www.',''); } catch(e){ return ''; } })();
+  const sub  = (() => { try { return new URL(url).hostname.replace('www.',''); } catch(e){ return ''; } })();
   inoCards.push({code, name, sub, url});
   saveCustomIno(inoCards);
   closeInoForm();
   renderIno();
 }
 
-/* CLOCK */
+/* ── CLOCK ── */
 function updateClock() {
   const now = new Date();
-  const h = String(now.getHours()).padStart(2,'0');
-  const m = String(now.getMinutes()).padStart(2,'0');
-  document.getElementById('clock').textContent = h + ':' + m;
-  const days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  document.getElementById('clock').textContent =
+    String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  const days   = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
   const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
   document.getElementById('dateline').textContent =
     days[now.getDay()] + ' ' + String(now.getDate()).padStart(2,'0') + ' ' + months[now.getMonth()];
@@ -730,17 +884,17 @@ setInterval(updateClock, 10000);
 
 (function() {
   const m = {
-    name: 'FEEDECK', short_name: 'FEEDECK', description: 'Personal feed terminal',
-    display: 'standalone', orientation: 'portrait',
-    background_color: '#080807', theme_color: '#080807',
+    name:'FEEDECK', short_name:'FEEDECK', description:'Personal feed terminal',
+    display:'standalone', orientation:'portrait',
+    background_color:'#080807', theme_color:'#080807',
     start_url: window.location.href,
-    icons: [{
-      src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%23080807'/><text x='60' y='380' font-family='monospace' font-size='380' font-weight='bold' fill='%23c8ff00'>F</text><rect x='60' y='410' width='320' height='14' fill='%23c8ff00'/></svg>",
-      sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable'
+    icons:[{
+      src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%23080807'/><text x='60' y='380' font-family='monospace' font-size='380' font-weight='bold' fill='%23c8ff00'>F</text><rect x='60' y='410' width='320' height='14' fill='%23c8ff00'/></svg>",
+      sizes:'any', type:'image/svg+xml', purpose:'any maskable'
     }]
   };
   try {
-    const blob = new Blob([JSON.stringify(m)], {type: 'application/manifest+json'});
+    const blob = new Blob([JSON.stringify(m)], {type:'application/manifest+json'});
     document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
   } catch(e) {}
 })();
